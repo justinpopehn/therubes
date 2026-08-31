@@ -61,7 +61,7 @@ try:
 except Exception as e:
     print(f"ESPN sync note: {e}")
 
-print("Generating styled HTML with Titles after Win %...")
+print("Generating styled HTML without Rank column...")
 html_output = """<!DOCTYPE html>
 <html>
 <head>
@@ -81,26 +81,23 @@ html_output = """<!DOCTYPE html>
 <table id="sortableTable">
   <thead>
     <tr>
-      <th onclick="sortTable(0)">Rank</th>
-      <th onclick="sortTable(1)">Owner</th>
-      <th onclick="sortTable(2)">Wins</th>
-      <th onclick="sortTable(3)">Losses</th>
-      <th onclick="sortTable(4)">Win %</th>
-      <th onclick="sortTable(5)">Titles</th>
-      <th onclick="sortTable(6)">Points For</th>
+      <th onclick="sortTable(0)">Owner</th>
+      <th onclick="sortTable(1)">Wins</th>
+      <th onclick="sortTable(2)">Losses</th>
+      <th onclick="sortTable(3)">Win %</th>
+      <th onclick="sortTable(4)">Titles</th>
+      <th onclick="sortTable(5)">Points For</th>
     </tr>
   </thead>
   <tbody>
 """
 
-rank = 1
 for owner, stats in sorted(all_time_stats.items(), key=lambda x: (x[1]['titles'], x[1]['wins'], x[1]['pf']), reverse=True):
     total = stats['wins'] + stats['losses']
     pct = round((stats['wins'] / total * 100), 1) if total > 0 else 0
     win_pct_str = f"{pct}%"
     titles = stats.get('titles', 0)
-    html_output += f"    <tr><td>{rank}</td><td>{owner}</td><td>{stats['wins']}</td><td>{stats['losses']}</td><td>{win_pct_str}</td><td>{titles}</td><td>{round(stats['pf'], 2)}</td></tr>\n"
-    rank += 1
+    html_output += f"    <tr><td>{owner}</td><td>{stats['wins']}</td><td>{stats['losses']}</td><td>{win_pct_str}</td><td>{titles}</td><td>{round(stats['pf'], 2)}</td></tr>\n"
 
 html_output += """  </tbody>
 </table>
@@ -151,4 +148,4 @@ function sortTable(n) {
 with open("leaderboard.html", "w") as f:
     f.write(html_output)
 
-print("SUCCESS! Generated updated leaderboard.html with Titles placed after Win %.")
+print("SUCCESS! Generated updated leaderboard.html without the Rank column.")
